@@ -7,10 +7,8 @@ int16_t accelX;
 int16_t accelY;
 
 Adafruit_PWMServoDriver PWMBoard = Adafruit_PWMServoDriver();
-// use these variables for converting angle degrees to pulseWidth
 const int minimumPulseWidth = 650;
 const int maximumPulseWidth  = 2350;
-// PCA9685 board number. Only matters if using more than one.
 uint8_t servonum = 0;
 
 int topRedPin = 9;
@@ -20,11 +18,10 @@ int topYellowPin = 10;
 void setup() {
   
   Serial.begin(9600);
-  // these 5 lines of code are for "waking" up the board
+  
   Wire.begin();
   Wire.beginTransmission(MPU);
   Wire.write(0x6B);
-  // writing a 0 wakes up board
   Wire.write(0);
   Wire.endTransmission(true);
   
@@ -40,42 +37,45 @@ void setup() {
   PWMBoard.setPWMFreq(60);
   
 }
-// create better function for converting degrees to PWM signals
+// not my function. using it as a placeholder
+int frequencyToAngle(int angle){
+  int pulseWidth = map(angle, 0, 180, minimumPulseWidth, maximumPulseWidth);
+  int returnAngle = int(float(pulseWidth) / 1000000 * 50 * 4096);
+  return returnAngle;
+}
 
 void loop() {
   
   Wire.beginTransmission(MPU);
   Wire.write(0x3B);
   Wire.endTransmission(false);
-  // so far only the accel x and y raw values are being used so only 4 registrars need to be read
   Wire.requestFrom(MPU, 4, true);
   accelX = Wire.read()<<8 | Wire.read();
   accelY = Wire.read()<<8 | Wire.read();
+  Serial.print("Accel X: ")
+  Serial.println(accelX);
+  Serial.print("Accel Y: ")
+  Serial.println(accelY);
   
   if (accelX >= 3000){
-    digitalWrite(bottomYellowPin, HIGH);
-    digitalWrite(topRedPin, HIGH);
+    PWMBoard.setPWM(4, 0, frequencyToAngle(0));
     }
   else if (accelX <= 0 ){
-    digitalWrite(topYellowPin, HIGH);
-    digitalWrite(bottomRedPin, HIGH);
+    //forward
     //PWMBoard.setPWM(4, 0, frequencyToAngle(180));
   
   }
   else if (accelY <= -1500){
-    digitalWrite(topRedPin, HIGH);
-    digitalWrite(bottomRedPin, HIGH);
+    //backward
+    //PWMBoard.setPWM(4, 0, frequencyToAngle(0));
     
   }
   else if (accelY >= 3000){
-    digitalWrite(topYellowPin, HIGH);
-    digitalWrite(bottomYellowPin, HIGH);
+    //PWMBoard.setPWM(4, 0, frequencyToAngle(180));
   }
   else{
-  digitalWrite(topRedPin, LOW);
-  digitalWrite(topYellowPin, LOW);
-  digitalWrite(bottomYellowPin, LOW);
-  digitalWrite(bottomRedPin, LOW);
+    //PWMBoard.setPWM(4, 0, frequencyToAngle(90));
+
   
   }
   delay(500);
