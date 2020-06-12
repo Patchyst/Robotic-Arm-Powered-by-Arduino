@@ -9,6 +9,7 @@ int16_t accelY;
 Adafruit_PWMServoDriver PWMBoard = Adafruit_PWMServoDriver();
 const int minimumPulseWidth = 650;
 const int maximumPulseWidth  = 2350;
+// PCA9685 board number. Only matters if using more than one.
 uint8_t servonum = 0;
 
 int topRedPin = 9;
