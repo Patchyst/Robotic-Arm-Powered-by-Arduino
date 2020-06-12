@@ -7,6 +7,7 @@ int16_t accelX;
 int16_t accelY;
 
 Adafruit_PWMServoDriver PWMBoard = Adafruit_PWMServoDriver();
+// use these variables for converting angle degrees to pulseWidth
 const int minimumPulseWidth = 650;
 const int maximumPulseWidth  = 2350;
 // PCA9685 board number. Only matters if using more than one.
