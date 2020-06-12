@@ -38,12 +38,7 @@ void setup() {
   PWMBoard.setPWMFreq(60);
   
 }
-
-int frequencyToAngle(int angle){
-  int pulseWidth = map(angle, 0, 180, minimumPulseWidth, maximumPulseWidth);
-  int returnAngle = int(float(pulseWidth) / 1000000 * 50 * 4096);
-  return returnAngle;
-}
+// create better function for converting degrees to PWM signals
 
 void loop() {
   
@@ -61,7 +56,7 @@ void loop() {
   else if (accelX <= 0 ){
     digitalWrite(topYellowPin, HIGH);
     digitalWrite(bottomRedPin, HIGH);
-    PWMBoard.setPWM(4, 0, frequencyToAngle(180));
+    //PWMBoard.setPWM(4, 0, frequencyToAngle(180));
   
   }
   else if (accelY <= -1500){
