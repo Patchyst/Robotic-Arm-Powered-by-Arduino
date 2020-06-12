@@ -23,6 +23,7 @@ void setup() {
   Wire.begin();
   Wire.beginTransmission(MPU);
   Wire.write(0x6B);
+  // writing a 0 wakes up board
   Wire.write(0);
   Wire.endTransmission(true);
   
