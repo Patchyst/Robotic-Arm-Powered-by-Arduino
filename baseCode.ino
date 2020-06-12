@@ -45,7 +45,8 @@ void loop() {
   Wire.beginTransmission(MPU);
   Wire.write(0x3B);
   Wire.endTransmission(false);
-  Wire.requestFrom(MPU, 6*2, true);
+  // so far only the accel x and y raw values are being used so only 4 registrars need to be read
+  Wire.requestFrom(MPU, 4, true);
   accelX = Wire.read()<<8 | Wire.read();
   accelY = Wire.read()<<8 | Wire.read();
   
