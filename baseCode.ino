@@ -20,7 +20,7 @@ int topYellowPin = 10;
 void setup() {
   
   Serial.begin(9600);
-  
+  // these 5 lines of code are for "waking" up the board
   Wire.begin();
   Wire.beginTransmission(MPU);
   Wire.write(0x6B);
