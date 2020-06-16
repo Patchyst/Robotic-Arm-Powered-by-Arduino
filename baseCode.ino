@@ -60,7 +60,7 @@ void loop() {
   Serial.println (abs(angleX));
   Serial.println (abs(angleY));
 
-  // PCA9685
+  // PCA9685 pin 4
   PWMBoard.setPWM(4, 0, angleToFreq(abs(angleY)));;
   
   // printing raw X and Y values
@@ -70,5 +70,5 @@ void loop() {
   Serial.println(accelY);
   
   // delay of 200 milliseconds
-  delay(500);
+  delay(200);
 }
