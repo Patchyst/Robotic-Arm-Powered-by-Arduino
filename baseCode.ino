@@ -33,13 +33,15 @@ void setup() {
 void loop() {
   
   mpu.getMotion6 (&accelX, &accelY, &accelZ, &gyroZ, &gyroY, &gyroZ);
-  int angleX = map (accelX / 131 , -17000 / 131, 17000 / 131, 0, 180) ;
+  int angleX = map (accelX / 131 , -17000 / 131, 17000 / 131, 0, 180);
+  int angleY = map (accelY / 131 , -17000 / 131, 17000 / 131, 0, 180);
 
-  Serial.println (angleX);
+  Serial.println (abs(angleX));
+  Serial.println (abs(angleY));
   Serial.print("Accel X: ");
   Serial.println(accelX);
   Serial.print("Accel Y: ");
   Serial.println(accelY);
   
-  delay(500);
+  delay(200);
 }
