@@ -42,8 +42,8 @@ void setup() {
   Wire.begin(); 
   //Serial.println(" PWM SERVO CHANGE: ")
 }
-// function for converting degrees to a corresponding frequency value that the PCA9685 can understand
-int angleToFreq(int degree){
+// function for converting degrees to a corresponding PWM value that the PCA9685 can understand
+int angleToPWM(int degree){
   int pulseLen = map(degree, 0, 180, SERVOMIN, SERVOMAX);
   int returnAngle = int(float(pulseLen) / 1000000 * 204800);
   return returnAngle;
@@ -61,7 +61,7 @@ void loop() {
   Serial.println (abs(angleY));
 
   // PCA9685 pin 4
-  PWMBoard.setPWM(4, 0, angleToFreq(abs(angleY)));;
+  PWMBoard.setPWM(4, 0, angleToPWM(abs(angleY)));;
   
   // printing raw X and Y values
   Serial.print("Accel X: ");
