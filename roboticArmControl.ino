@@ -1,3 +1,10 @@
+//  Robotic-Arm-Powered-by-Arduino
+//  roboticArmControl.ino
+//  https://github.com/Patchyst
+//  Created by Patrick Story
+//  Copyright © 2020 Patrick Story. All rights reserved.
+//
+
 // header for interacting with MPU6050
 #include "MPU6050.h"
 // header for working with I2C protocl
