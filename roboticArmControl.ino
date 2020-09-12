@@ -36,7 +36,7 @@ uint8_t servonum = 0;
 void setup() {
   
   Serial.begin(9600);
-  // waking I2c slave (MPU6050)
+  // waking I2c replica (MPU6050)
   Wire.begin();
   Wire.beginTransmission(MPUAddress);
   Wire.write(0x6B);
