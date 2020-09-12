@@ -46,7 +46,7 @@ void setup() {
   PWMBoard.begin();
   // Servos use 60 Hz LED uses 1.0 KHz
   PWMBoard.setPWMFreq(60);
-  // beginning transmission between I2c board and I2c slave
+  // beginning transmission between I2c board and I2c replica
   Wire.begin(); 
   //Serial.println(" PWM SERVO CHANGE: ")
 }
