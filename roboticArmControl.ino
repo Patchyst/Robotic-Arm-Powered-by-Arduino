@@ -68,7 +68,7 @@ void loop() {
   Serial.println (abs(angleY));
 
   // PCA9685 pin 4
-  PWMBoard.setPWM(4, 0, angleToPWM(abs(angleY)));;
+  PWMBoard.setPWM(4, 0, angleToServoRange(abs(angleY)));;
   
   // printing raw X and Y values
   Serial.print("Accel X: ");
