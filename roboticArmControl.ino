@@ -16,8 +16,9 @@
 // creating PCA9685 object
 Adafruit_PWMServoDriver PWMBoard = Adafruit_PWMServoDriver();
 // constants for the minimum and maximum PCA9685 pwm value
-#define SERVOMIN 650
-#define SERVOMAX 2350
+#define SERVOMIN 100
+#define SERVOMAX 500
+#define SERVO_FREQ 50
 
 // creating MPU6050 object
 MPU6050 mpu;
@@ -28,10 +29,6 @@ const int MPUAddress = 0x68;
 int16_t accelX, accelY, accelZ;
 int16_t gyroX, gyroY, gyroZ;
 
-
-
-// PCA9685 board number, only matters if using more than one
-uint8_t servonum = 0;
 
 void setup() {
   
@@ -45,7 +42,7 @@ void setup() {
   // starting PCA9685
   PWMBoard.begin();
   // Servos use 60 Hz LED uses 1.0 KHz
-  PWMBoard.setPWMFreq(60);
+  PWMBoard.setPWMFreq(50);
   // beginning transmission between I2c board and I2c replica
   Wire.begin(); 
   //Serial.println(" PWM SERVO CHANGE: ")
