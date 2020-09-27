@@ -51,6 +51,14 @@ void setup() {
 }
 // function for converting degrees to a corresponding value in the corresponding servo range
 int angleToServoRange(int degree){
+  if(degree > 180){
+    for(int i; degree>180; i++){
+      degree -= 1;
+      }
+    }
+   else if(degree < 0){
+    degree = 0;
+    }
   int pulseLen = map(degree, 0, 180, SERVOMIN, SERVOMAX);
   return pulseLen;
 }
@@ -62,13 +70,9 @@ void loop() {
   // using map to convert raw X and Y values from accelerometer into degrees 0-180
   int angleX = map (accelX / 131 , -17000 / 131, 17000 / 131, 0, 180);
   int angleY = map (accelY / 131 , -17000 / 131, 17000 / 131, 0, 180);
-  
-  // taking the absolute value to ensure no negative numbers are given
-  Serial.println (abs(angleX));
-  Serial.println (abs(angleY));
 
-  // PCA9685 pin 4
-  PWMBoard.setPWM(4, 0, angleToServoRange(abs(angleY)));;
+  // PCA9685 pin 0
+  PWMBoard.setPWM(0, 0, angleToServoRange(angleY));
   
   // printing raw X and Y values
   Serial.print("Accel X: ");
