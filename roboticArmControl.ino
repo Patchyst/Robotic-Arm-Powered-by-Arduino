@@ -41,6 +41,8 @@ void setup() {
   Wire.endTransmission(true);
   // starting PCA9685
   PWMBoard.begin();
+  PWMBoard.setOscillatorFrequency(27000000);
+  
   // Servos use 60 Hz LED uses 1.0 KHz
   PWMBoard.setPWMFreq(SERVO_FREQ);
   // beginning transmission between I2c board and I2c replica
