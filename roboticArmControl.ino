@@ -42,17 +42,17 @@ void setup() {
   // starting PCA9685
   PWMBoard.begin();
   // Servos use 60 Hz LED uses 1.0 KHz
-  PWMBoard.setPWMFreq(50);
+  PWMBoard.setPWMFreq(SERVO_FREQ);
   // beginning transmission between I2c board and I2c replica
   Wire.begin(); 
   //Serial.println(" PWM SERVO CHANGE: ")
 }
-// function for converting degrees to a corresponding PWM value that the PCA9685 can understand
-int angleToPWM(int degree){
+// function for converting degrees to a corresponding value in the corresponding servo range
+int angleToServoRange(int degree){
   int pulseLen = map(degree, 0, 180, SERVOMIN, SERVOMAX);
-  int returnAngle = int(float(pulseLen) / 1000000 * 204800);
-  return returnAngle;
-  }
+  return pulseLen;
+}
+
 
 void loop() {
   // reading raw values from MPU6050
