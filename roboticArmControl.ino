@@ -3,7 +3,6 @@
 //  roboticArmControl.ino
 //  https://github.com/Patchyst
 //  Created by Patrick Story
-//  Copyright © 2020 Patrick Story. All rights reserved.
 //
 
 // header for interacting with MPU6050
