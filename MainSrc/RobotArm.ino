@@ -1,6 +1,6 @@
 /*  
 * Robotic-Arm-Powered-by-Arduino
-* roboticArmControl.ino
+* roboticArm.ino
 * https://github.com/Patchyst
 * Created by Patrick Story
 */
