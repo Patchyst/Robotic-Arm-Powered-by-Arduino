@@ -1,8 +1,9 @@
-/*
- * 
- * 
- * 
- */
+/*  
+* Robotic-Arm-Powered-by-Arduino
+* roboticArmControl.ino
+* https://github.com/Patchyst
+* Created by Patrick Story
+*/
 #include <Wire.h>
 #include <RF24.h> // RF24 driver library; author: TMRh20;Rowberg
 
