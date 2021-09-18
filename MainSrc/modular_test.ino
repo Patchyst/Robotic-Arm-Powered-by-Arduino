@@ -4,7 +4,6 @@
 * https://github.com/Patchyst
 * Created by Patrick Story
 */
-#include <stdlib.h>
 #include <Wire.h>
 #include <RF24.h> // RF24 driver library; author: TMRh20;Rowberg
 
@@ -28,7 +27,11 @@ const int pipe = 0;
 
 RF24 RF24Chip(CEPIN, CSPIN, RF24_SPI_SPEED);
 
-int setup_accelerometer(uint8_t mpu_addr, uint8_t pwr_mgmt, uint8_t accel_config, uint16_t config_bitmap){
+int setup_accelerometer(uint8_t mpu_addr, uint8_t pwr_mgmt, uint8_t accel_config, uint16_t config_bitmap, bool startI2C){
+  if(startI2C){
+    Wire.begin();
+  }
+  
   Wire.beginTransmission(mpu_addr);
   Wire.write(pwr_mgmt);
   Wire.write((uint8_t)(config_bitmap & 0xff00));
@@ -37,9 +40,9 @@ int setup_accelerometer(uint8_t mpu_addr, uint8_t pwr_mgmt, uint8_t accel_config
   Wire.beginTransmission(mpu_addr);
   Wire.write(accel_config);
   Wire.write((uint8_t)((config_bitmap & 0x00ff)<<8));
-  while(Wire.endTransmission(true) != 0x00)
+  while(Wire.endTransmission(true) != 0x00);
 
-  return EXIT_SUCCESS
+  return 0;
 }
 
 int read_accel_data(uint8_t mpu_addr, bool end_trans){
@@ -58,20 +61,30 @@ int read_accel_data(uint8_t mpu_addr, bool end_trans){
 }
 
 
-int calibrate_accelerometer(uint8_t mpu_addr, bool instruct){
+float calibrate_accelerometer(uint8_t mpu_addr, bool instruct){
   float error = 0.0;
+  float d_step = 0.001
+
+  float raw_x = read_accel_data(mpu_addr, true)[0]
+  float raw_y = read_accel_data(mpu_addr, true)[1]
+   
   if(instruct){
     Serial.println("Place MPU6050 on a flat surface and wait for the error to be found");  
   }
-  while(read_accel_data(mpu_addr, true)[0] > 0 && read_accel_data(mpu_addr, true)[1] > 0){
+  while(raw_x > 0 && raw_y > 0){
+      error+=d_step
       
+      raw_x = read_accel_data(mpu_addr, true)[0]/error
+      raw_y = read_accel_data(mpu_addr, true)[1]/error      
   }
+
+  return error;
 }
 
 void setup() {
   Serial.begin(9600);
-  Wire.begin();
- 
+
+  
   
   /* RF24 setup */
   if(!RF24Chip.begin()){
@@ -84,13 +97,7 @@ void setup() {
 }
 
 void loop() {
- Wire.beginTransmission(MPUADDR);
- Wire.write(ACCEL_XOUT_H);
- Wire.endTransmission(false);
- Wire.requestFrom(MPUADDR, 2, true);
- ACCEL_XOUT = (Wire.read()<< 8|Wire.read());
- Serial.println(ACCEL_XOUT);
- Wire.endTransmission();
+ 
  if(RF24Chip.available(pipe)){
 
   }
