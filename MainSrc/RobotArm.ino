@@ -17,9 +17,9 @@ const uint8_t PWR_MGMT_1 = 0x6B;
 const uint8_t ACCEL_CONFIG = 0x1c;
 enum ACCEL_REGISTERS {ACCEL_XOUT_H=0x3B, ACCEL_XOUT_L, ACCEL_YOUT_H, ACCEL_YOUT_L, ACCEL_ZOUT_H, ACCEL_ZOUT_L};
 /* MPU6050 Variables */
-uint16_t ACCEL_XOUT;
-uint16_t ACCEL_YOUT;
-uint16_t ACCEL_ZOUT;
+float ACCEL_XOUT;
+float ACCEL_YOUT;
+float ACCEL_ZOUT;
 
 /*RF24 variables */
 const byte addr[6] = "Recv1";
@@ -34,14 +34,14 @@ void setup() {
   Wire.beginTransmission(MPUADDR);
   Wire.write(PWR_MGMT_1);
   Wire.write(0);
-  Wire.write(0x00); // Setting DEVICE_RESET bit
+  Wire.write(0x00);
  
   while(Wire.endTransmission(true) != 0x00);
   
   
   Wire.beginTransmission(MPUADDR);
   Wire.write(ACCEL_CONFIG);
-  Wire.write(0x11);
+  Wire.write(0x00);
  
   while(Wire.endTransmission(true) != 0x00);
  
@@ -58,7 +58,7 @@ void setup() {
    RF24Chip.openReadingPipe(pipe, addr);
 
   
-  
+  Serial.begin(9600);
 }
 
 void loop() {
@@ -66,7 +66,7 @@ void loop() {
  Wire.write(ACCEL_XOUT_H);
  Wire.endTransmission(false); // Keep connection alive after transmission
  Wire.requestFrom(MPUADDR, 2, true); // request the first 2 registers
- ACCEL_XOUT = (Wire.read() << 8 | Wire.read());
+ ACCEL_XOUT = (Wire.read()<< 8|Wire.read());
  Serial.println(ACCEL_XOUT);
  Wire.endTransmission();
  if(RF24Chip.available(pipe)){
