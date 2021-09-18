@@ -33,7 +33,6 @@ void setup() {
   /* MPU6050 setup */
   Wire.beginTransmission(MPUADDR);
   Wire.write(PWR_MGMT_1);
-  Wire.write(0);
   Wire.write(0x00);
  
   while(Wire.endTransmission(true) != 0x00);
