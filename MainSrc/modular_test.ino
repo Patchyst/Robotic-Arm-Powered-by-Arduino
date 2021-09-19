@@ -82,7 +82,6 @@ void setup() {
 }
 
 void loop() {
-  int x = 1;
   struct accel_coordinates xyz; 
   read_accel_data(MPUADDR, false, LSB_per_g, &xyz);
   
