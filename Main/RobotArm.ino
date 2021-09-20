@@ -1,6 +1,6 @@
 /*  
 * Robotic-Arm-Powered-by-Arduino
-* RobotArm.ino
+* roboticArm.ino
 * https://github.com/Patchyst
 * Created by Patrick Story
 */
@@ -25,6 +25,7 @@ enum ACCEL_REGISTERS {ACCEL_XOUT_H=0x3B, ACCEL_XOUT_L, ACCEL_YOUT_H, ACCEL_YOUT_
 /* MPU6050 Variables */
 const uint8_t config_map = 0b00001000;
 float LSB_per_g = 8192;
+float degree = 1;
 
 /*RF24 variables */
 const byte addr[6] = "Recv1";
@@ -88,10 +89,16 @@ void setup() {
 }
 
 void loop() {
+  float invert = -1; // invert the unit circle depending on the MPU6050's position on the finger
   struct accel_coordinates xyz; 
   read_accel_data(MPUADDR, false, LSB_per_g, &xyz);
-  Serial.println(atan(xyz.z/xyz.y)*RAD_TO_DEG);
- 
+  float prev_reading = degree;
+  degree = atan(xyz.y/xyz.z)*invert*RAD_TO_DEG;
+  if(isnan(degree)){ // inverse tan is undef. (90 or -90 deg)
+    degree = 90 * ((prev_reading)/(abs(prev_reading))); // use the previous reading to determine the sign
+  }
+  
+ Serial.println(degree);
  if(RF24Chip.available(pipe)){
 
   }
