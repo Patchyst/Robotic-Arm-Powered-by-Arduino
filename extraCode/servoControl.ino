@@ -12,7 +12,6 @@ void setup() {
   pwm.begin();
   pwm.setOscillatorFrequency(27000000);
   pwm.setPWMFreq(SERVO_FREQ);
-  delay(10);
 }
 
 int angleToServoRange(int degree){
@@ -22,7 +21,4 @@ int angleToServoRange(int degree){
 
 void loop() {
   pwm.setPWM(servonum, 0, angleToServoRange(0));
-  delay(1000);
-  pwm.setPWM(servonum, 0, angleToServoRange(180));
-  delay(1000);
 }
