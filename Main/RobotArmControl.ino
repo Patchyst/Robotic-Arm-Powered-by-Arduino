@@ -105,11 +105,6 @@ void loop() {
   if(isnan(degree)){ // inverse tan is undef. (90 or -90 deg)
     degree = 90 * ((prev_reading)/(abs(prev_reading))); // use the previous reading to determine the sign
   }
- if(RF24Chip.available(pipe)){
-   rounded_degree = (int)(degree+0.5);
-   Serial.println(rounded_degree);
-   RF24Chip.write(&rounded_degree, sizeof(int));
- }
- 
-
+  rounded_degree = (int)(degree+0.5);
+  RF24Chip.write(&rounded_degree, sizeof(int));
 }
