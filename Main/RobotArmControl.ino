@@ -1,6 +1,6 @@
 /*  
 * Robotic-Arm-Powered-by-Arduino
-* roboticArm.ino
+* RobotArmControl.ino
 * https://github.com/Patchyst
 * Created by Patrick Story
 */
@@ -85,12 +85,14 @@ void setup() {
   while(setup_accelerometer(MPUADDR, PWR_MGMT_1, ACCEL_CONFIG, config_map, true) != 0);
   /* RF24 setup */
   if(!RF24Chip.begin()){
+    Serial.println("[FATAL] RF24 not responding");
   }
   if(!RF24Chip.isChipConnected()){
+   Serial.println("[FATAL] RF24 not connected");
    }
    RF24Chip.setPALevel(RF24_PA_MIN);
-   RF24Chip.startListening();
-   RF24Chip.openReadingPipe(pipe, addr);
+   RF24Chip.stopListening();
+   RF24Chip.openWritingPipe(addr);
    
 }
 
@@ -105,6 +107,7 @@ void loop() {
   }
  if(RF24Chip.available(pipe)){
    rounded_degree = (int)(degree+0.5);
+   Serial.println(rounded_degree);
    RF24Chip.write(&rounded_degree, sizeof(int));
  }
  
