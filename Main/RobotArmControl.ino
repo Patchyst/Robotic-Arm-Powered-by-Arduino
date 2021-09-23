@@ -72,12 +72,30 @@ int read_accel_data(uint8_t mpu_addr, bool end_trans, float lsb_per_g, struct ac
 }
 
 
-bool filter(float g_reading, float max_offset, float min_offset){
-  if(g_reading > 1+max_offset || g_reading < -1-min_offset){
-    return false;
+float fix_error(float val, float max_v, float low_v){
+  if(val>max_v){
+    return val-(val-max_v);
+   } else if(val<low_v){
+    return val-(val+abs(low_v));
+   } else {
+    return val;
     }
-   return true;
 }
+
+int get_quadrant(float x_pos, float y_pos){
+  if(x_pos == abs(x_pos) and y_pos == abs(y_pos)){
+    return 1;
+   } 
+   else if(x_pos != abs(x_pos) and y_pos == abs(y_pos)) {
+    return 2;   
+   }
+   else if(x_pos == abs(x_pos) and y_pos != abs(y_pos)) {
+    return 4;
+   } else {
+      return 3;
+    }
+  
+ }
 
 void setup() {
   Serial.begin(9600);
@@ -93,18 +111,48 @@ void setup() {
    RF24Chip.setPALevel(RF24_PA_MIN);
    RF24Chip.stopListening();
    RF24Chip.openWritingPipe(addr);
-   
+   Serial.println("Finished setting up ");
 }
 
 void loop() {
-  float invert = -1; // invert the unit circle depending on the MPU6050's position on the finger
-  struct accel_coordinates xyz; 
+    /* Because the Z axis reads 1 when the MPU6050 is perfectly horizontal, it will be the new x axis.
+  This allows the use of basic trig to find the angle of orientation based on quadrant */
+  
+  struct accel_coordinates xyz;
   read_accel_data(MPUADDR, false, LSB_per_g, &xyz);
-  float prev_reading = degree;
-  degree = atan(xyz.y/xyz.z)*invert*RAD_TO_DEG;
-  if(isnan(degree)){ // inverse tan is undef. (90 or -90 deg)
-    degree = 90 * ((prev_reading)/(abs(prev_reading))); // use the previous reading to determine the sign
+  
+  xyz.z = fix_error(xyz.z, 1, -1);
+  xyz.y = fix_error(xyz.y, 1, -1);
+  /* Handles the edge case of g < -1 or g > 1. Usually due to minor, external forces disrupting the reading */
+  if(abs(xyz.z) == 1){
+    xyz.y = 0;
+    degree = 0;
   }
-  rounded_degree = (int)(degree+0.5);
-  RF24Chip.write(&rounded_degree, sizeof(int));
+  else if(abs(xyz.y) == 1){
+    xyz.z = 0;
+    degree = 90*xyz.y;
+   } 
+   else {
+    degree = atan(xyz.y/xyz.z)*RAD_TO_DEG;
+   }
+  /* Note that the following switch statement changes degrees to specifically fit this project */
+  switch (get_quadrant(xyz.z, xyz.y)){ 
+    case 1: // fingers should not move anti-clockwise from the +x
+      degree = 0;
+      break;
+    case 4:
+      degree = abs(degree);
+      break;
+    case 3:
+      degree = (90-degree)+90; // make the degree relative to the -y then add 90
+      break;
+    case 2: // fingers should not move clockwise from the -x
+      degree = 180; 
+      break;
+  }
+ rounded_degree = (int)(degree+0.5);
+ Serial.println(rounded_degree);
+ RF24Chip.write(&rounded_degree, sizeof(int));
+ 
+
 }
